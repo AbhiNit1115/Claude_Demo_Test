@@ -27,10 +27,13 @@ class BasePage:
         element = wait.until(EC.element_to_be_clickable(locator))
         element.click()
 
-    def type_text(self, locator, text: str, clear_first: bool = True):
+    def type_text(self, locator, text: str):
         element = self.find_element(locator)
-        if clear_first:
-            element.clear()
+        element.clear()
+        element.send_keys(text)
+
+    def type_text_append(self, locator, text: str):
+        element = self.find_element(locator)
         element.send_keys(text)
 
     def get_text(self, locator) -> str:
