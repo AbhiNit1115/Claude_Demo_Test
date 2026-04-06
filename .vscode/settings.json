@@ -1,7 +1,5 @@
 {
-    "airun.settings": {
-        "workspaceId": "d625ba1f-cbd8-4b7f-ac3b-dd1bef67e51b"
-    },
+    "airun.settings": {},
     "claudeCode.environmentVariables": [
         {
             "name": "ANTHROPIC_LOG",
@@ -9,7 +7,7 @@
         },
         {
             "name": "ANTHROPIC_BASE_URL",
-            "value": "http://localhost:51273"
+            "value": "http://localhost:65108"
         },
         {
             "name": "ANTHROPIC_AUTH_TOKEN",
