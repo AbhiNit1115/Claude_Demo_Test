@@ -235,51 +235,21 @@ These are defined on the login page itself at https://practice.expandtesting.com
 - **Environment-based configuration**: URLs and timeouts configured via pytest.ini with pytest-env plugin
 - **Lazy page object loading**: Page objects are instantiated on first access, not on fixture creation
 
-## Troubleshooting
-
-### WebDriver Issues
-
-**ChromeDriver not found or version mismatch**
-- Ensure `chromedriver` is in your PATH or install it via package manager
-- macOS: `brew install chromedriver`
-- Ubuntu: `apt-get install chromium-chromedriver`
-- Windows: Download from https://googlechromelabs.github.io/chrome-for-testing/ and add to PATH
-
-**Cannot connect to site (DNS/network errors)**
-- Verify your internet connection
-- Check that the base URLs are correct in `pytest.ini` files
-- For corporate networks with proxies, configure Selenium WebDriver with proxy settings
-
-**Timeout errors during test execution**
-- Increase `EXPLICIT_WAIT` and `IMPLICIT_WAIT` values in `Typi_Code_Tests/UI_Tests/pytest.ini`
-- Check if the target website is responding slowly (especially `practice.expandtesting.com`)
-- On slow systems, increase waits incrementally
-
-**Element not found errors**
-- Verify XPath locators by inspecting elements with browser DevTools
-- Check that page has loaded before attempting interactions (waits are already in place)
-- UI elements may have changed on ExpandTesting site — update locators in `home_page.py` if needed
-
-### API Connection Issues
-
-**Connection refused to TypiCode API**
-- Verify `URL_API` is set correctly in `Typi_Code_Tests/Test_Scripts/pytest.ini`
-- Default: `https://jsonplaceholder.typicode.com/`
-- Test connectivity: `curl https://jsonplaceholder.typicode.com/posts`
-
-**ResponseError on valid endpoints**
-- Check HTTP status codes in error messages
-- Verify correlation IDs are being generated (uuid in request headers)
-
-## Important Files to Know
-
-- `Typi_Code_Tests/Test_Scripts/pytest.ini` — API test configuration (URL_API)
-- `Typi_Code_Tests/UI_Tests/pytest.ini` — UI test configuration (BROWSER, BASE_URL, timeouts)
-- `requirements.txt` — All Python dependencies
-- `setup/update_pytest_ini.py` — Utility to manage API endpoint configuration
-
 ## Code Style Guidelines
 
 - Use comments sparingly — only for complex or non-obvious logic
 - Prefer clear variable/function names over explanatory comments
 - Self-documenting code is preferred
+
+## Testing Standards
+
+Comprehensive testing rules and conventions are maintained in **[`.claude/rules/testing.md`](.claude/rules/testing.md)**.
+
+### Quick Summary
+
+- Test names must follow: `test_api_*` (API), `test_ui_*` (UI)
+- All test methods must include a **Workflow section** describing test steps
+- Tests are organized in test classes: `TestNamePositive` and `TestNameNegative`
+- Use verification methods from `TypiCodeAPI` and `UIApplication` wrappers
+
+For detailed guidelines, conventions, and examples, see **[`.claude/rules/testing.md`](.claude/rules/testing.md)**.

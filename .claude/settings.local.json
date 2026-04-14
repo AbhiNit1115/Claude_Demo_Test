@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m py_compile libraries/ui_functions/browser_client.py libraries/ui_functions/ui_application.py libraries/ui_functions/pages/base_page.py libraries/ui_functions/pages/home_page.py Typi_Code_Tests/UI_Tests/conftest.py Typi_Code_Tests/UI_Tests/test_home_page.py)",
+      "Bash(codemie doctor:*)"
+    ]
+  }
+}
