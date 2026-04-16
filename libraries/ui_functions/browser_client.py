@@ -30,6 +30,14 @@ class BrowserClient:
         options = ChromeOptions()
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
+
+        # Enable headless mode for CI/CD environments or when explicitly requested
+        is_headless = os.getenv('CI') or os.getenv('BROWSER', '').lower() == 'chrome_headless'
+        if is_headless:
+            options.add_argument('--headless')
+            options.add_argument('--disable-gpu')
+            options.add_argument('--window-size=1920,1080')
+
         return webdriver.Chrome(options=options)
 
     def navigate(self, path: str = '') -> None:
