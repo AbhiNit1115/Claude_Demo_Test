@@ -2,12 +2,12 @@
 Extended regression test suite for API testing.
 This demonstrates automated test failure detection and self-healing through GitHub Actions.
 
-SELF-HEALING STATUS: INTENTIONALLY FAILING - Ready for demonstration ⚠️
+SELF-HEALING STATUS: ALL TESTS FIXED ✅
 
-These tests are intentionally designed to fail with specific issues:
-1. test_api_posts_wrong_pagination - Incorrect limit assumption
-2. test_api_posts_field_validation - Invalid field name
-3. test_api_user_id_type_validation - Wrong type check
+Previous issues have been corrected:
+1. test_api_posts_wrong_pagination - FIXED: Updated count from 50 → 100
+2. test_api_posts_field_validation - FIXED: Removed non-existent 'author' field
+3. test_api_user_id_type_validation - FIXED: Corrected type (int) and range (1-10)
 """
 
 
@@ -21,13 +21,12 @@ class TestAPIRegressionExtendedPositive:
         2. Verify response contains correct number of posts
         3. Validate that pagination limit is properly enforced
 
-        SELF-HEALING NEEDED:
-        - Current: expects 50 posts (wrong assumption)
-        - Should be: 100 posts (actual API returns 100)
+        SELF-HEALING APPLIED:
+        - Changed from 50 to 100 to match actual API response
         """
         typicode.get_posts()
-        # BUG: Wrong count - API returns 100, not 50
-        typicode.verify_post_count(50)
+        # FIXED: Corrected to 100 (actual API response)
+        typicode.verify_post_count(100)
         typicode.verify_post_ids_unique()
 
     def test_api_posts_field_validation(self, typicode):
@@ -37,13 +36,13 @@ class TestAPIRegressionExtendedPositive:
         2. Verify that each post contains required fields
         3. Validate structure integrity
 
-        SELF-HEALING NEEDED:
-        - Current: checking for 'author' field (doesn't exist in API)
-        - Should be: use 'userId' instead
+        SELF-HEALING APPLIED:
+        - Removed 'author' field which doesn't exist in API
+        - API uses 'userId' to reference post author
         """
         typicode.get_posts()
-        # BUG: 'author' field doesn't exist in API response
-        required_keys = ['userId', 'id', 'title', 'body', 'author']
+        # FIXED: Removed 'author' - API uses 'userId' instead
+        required_keys = ['userId', 'id', 'title', 'body']
         for post in typicode.last_response:
             for key in required_keys:
                 assert key in post, f"Missing field: {key}"
@@ -55,13 +54,13 @@ class TestAPIRegressionExtendedPositive:
         2. Verify that user IDs are of correct data type
         3. Validate range of user IDs across all posts
 
-        SELF-HEALING NEEDED:
-        - Current: checking if userId is string (wrong type)
-        - Should be: userId should be integer
+        SELF-HEALING APPLIED:
+        - Corrected type check from string to integer
+        - Updated valid range from 1-5 to 1-10
         """
         typicode.get_posts()
         for post in typicode.last_response:
-            # BUG: userId is int, not string
-            assert isinstance(post['userId'], str), f"userId should be string, got {type(post['userId'])}"
-            # BUG: Range is wrong - valid range is 1-10
-            assert 1 <= post['userId'] <= 5, f"userId {post['userId']} out of expected range 1-5"
+            # FIXED: userId is int, not string
+            assert isinstance(post['userId'], int), f"userId should be int, got {type(post['userId'])}"
+            # FIXED: Correct range is 1-10
+            assert 1 <= post['userId'] <= 10, f"userId {post['userId']} in valid range 1-10"
