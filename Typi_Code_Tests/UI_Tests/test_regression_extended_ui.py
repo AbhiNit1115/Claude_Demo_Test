@@ -24,7 +24,7 @@ class TestUIRegressionExtendedPositive:
         - Updated expected text from 'Welcome to Automation' to 'Automation Testing Practice'
         """
         app.navigate_home()
-        h1_text = app.home_page.get_text(app.home_page.locators.PAGE_HEADING)
+        h1_text = app.home_page.get_h1_text()
         # FIXED: Corrected heading text to match actual page
         assert 'Automation Testing Practice' in h1_text, f"Expected 'Automation Testing Practice', got '{h1_text}'"
 
@@ -32,14 +32,13 @@ class TestUIRegressionExtendedPositive:
         """
         Workflow:
         1. Navigate to login page
-        2. Locate login button using correct page object locator
+        2. Locate login button using correct page object method
         3. Verify button is clickable
 
         SELF-HEALING APPLIED:
-        - Updated from hardcoded wrong button ID to correct page object locator
-        - Now uses LoginPageLocators.LOGIN_BUTTON from page object model
+        - Updated from hardcoded wrong button ID to use correct page object method
+        - Now uses is_login_button_visible() which has correct LoginPageLocators.LOGIN_BUTTON
         """
         app.navigate_login()
-        # FIXED: Use correct button locator from page object instead of wrong ID
-        login_button = app.login_page.find_element(app.login_page.locators.LOGIN_BUTTON)
-        assert app.login_page.is_element_visible(app.login_page.locators.LOGIN_BUTTON), "Login button should be visible"
+        # FIXED: Use correct page object method instead of wrong ID
+        assert app.login_page.is_login_button_visible(), "Login button should be visible"
