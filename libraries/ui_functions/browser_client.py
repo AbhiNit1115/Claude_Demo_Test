@@ -5,6 +5,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 
 
 class BrowserClient:
@@ -38,7 +40,9 @@ class BrowserClient:
             options.add_argument('--disable-gpu')
             options.add_argument('--window-size=1920,1080')
 
-        return webdriver.Chrome(options=options)
+        # Use webdriver-manager to automatically handle ChromeDriver
+        service = Service(ChromeDriverManager().install())
+        return webdriver.Chrome(service=service, options=options)
 
     def navigate(self, path: str = '') -> None:
         url = self.base_url + path

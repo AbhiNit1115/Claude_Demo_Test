@@ -36,6 +36,7 @@ jobs:
           pytest Typi_Code_Tests/Test_Scripts/ -v --html=api-report.html --self-contained-html
         env:
           URL_API: https://jsonplaceholder.typicode.com/
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Upload API test report
         if: always()
@@ -63,15 +64,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Set up Chrome and ChromeDriver
+      - name: Set up Chrome
         uses: browser-actions/setup-chrome@latest
         with:
           chrome-version: stable
-
-      - name: Set up ChromeDriver
-        uses: nanasess/setup-chromedriver@v2
-        with:
-          chromedriver-version: stable
 
       - name: Run UI tests
         run: |
@@ -82,6 +78,7 @@ jobs:
           BASE_URL: https://practice.expandtesting.com/
           EXPLICIT_WAIT: '10'
           IMPLICIT_WAIT: '5'
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Upload UI test report
         if: always()
