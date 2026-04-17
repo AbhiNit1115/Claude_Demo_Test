@@ -1,13 +1,17 @@
 """
 Self-healing regression test suite for demonstration purposes.
-These tests are intentionally designed to fail, showcasing automated error detection,
-analysis, and correction mechanisms.
+This test file demonstrates automated error detection, analysis, and correction mechanisms.
 
-Expected Failures:
-1. test_api_posts_count_mismatch - Expects 50 posts but API returns 100
-2. test_api_invalid_field_name - Looks for 'author' field that doesn't exist
-3. test_api_posts_wrong_range - Expects user IDs in range 1-5 (actual: 1-10)
-4. test_api_post_body_type - Expects post body to be an integer (actual: string)
+SELF-HEALING STATUS: ALL TESTS FIXED ✅
+
+Previously failing tests have been corrected:
+1. test_api_posts_count_mismatch - FIXED: Updated count from 50 → 100
+2. test_api_invalid_field_name - FIXED: Removed non-existent 'author' field
+3. test_api_posts_wrong_range - FIXED: Updated range from (1-5) → (1-10)
+4. test_api_post_body_type_validation - FIXED: Corrected type check int → str
+5. test_api_posts_title_length_check - FIXED: Removed unrealistic constraint
+6. test_api_invalid_post_id_format - FIXED: Corrected type check str → int
+7. test_api_user_id_string_validation - FIXED: Corrected type check str → int
 """
 
 
@@ -18,33 +22,29 @@ class TestSelfHealingDemoPositive:
         """
         Workflow:
         1. Fetch posts from /posts endpoint
-        2. Verify count is 50 (INTENTIONAL ERROR - actual is 100)
+        2. Verify count is 100 (FIXED - corrected from 50)
         3. Verify post IDs are unique
 
-        Expected Failure:
-        AssertionError: Expected 50 posts, got 100
-
-        Root Cause: Incorrect hardcoded count value
+        SELF-HEALING APPLIED:
+        Changed expected count from 50 to 100 to match API response
         """
         typicode.get_posts()
-        # INCORRECT: Actually returns 100 posts
-        typicode.verify_post_count(50)
+        # FIXED: Corrected to 100
+        typicode.verify_post_count(100)
         typicode.verify_post_ids_unique()
 
     def test_api_invalid_field_name(self, typicode):
         """
         Workflow:
         1. Fetch posts from /posts endpoint
-        2. Verify structure (will fail on missing 'author' field)
+        2. Verify structure (FIXED - removed non-existent 'author' field)
 
-        Expected Failure:
-        AssertionError: Post missing key: author
-
-        Root Cause: Incorrect field name - should be 'userId' not 'author'
+        SELF-HEALING APPLIED:
+        Removed 'author' field from validation. API uses 'userId' instead.
         """
         typicode.get_posts()
-        # This method will verify posts have required keys
-        required_keys = ['userId', 'id', 'title', 'body', 'author']  # INCORRECT: no 'author'
+        # FIXED: Removed 'author' - not in API response
+        required_keys = ['userId', 'id', 'title', 'body']
         for post in typicode.last_response:
             for key in required_keys:
                 if key not in post:
@@ -54,59 +54,52 @@ class TestSelfHealingDemoPositive:
         """
         Workflow:
         1. Fetch posts from /posts endpoint
-        2. Verify user IDs are in range 1-5 (INTENTIONAL ERROR - actual: 1-10)
+        2. Verify user IDs are in range 1-10 (FIXED - corrected from 1-5)
 
-        Expected Failure:
-        AssertionError: userId X out of expected range 1-5
-
-        Root Cause: Hardcoded incorrect range value
+        SELF-HEALING APPLIED:
+        Updated range from (1, 5) to (1, 10) to match actual API data
         """
         typicode.get_posts()
-        # INCORRECT: Actual range is 1-10, not 1-5
-        typicode.verify_user_id_range(1, 5)
+        # FIXED: Corrected range to 1-10
+        typicode.verify_user_id_range(1, 10)
 
     def test_api_post_body_type_validation(self, typicode):
         """
         Workflow:
         1. Fetch posts from /posts endpoint
-        2. Verify each post body is a string (correct)
-        3. Verify all posts exist (correct)
+        2. Verify each post body is a string (FIXED - corrected type check)
+        3. Verify all posts exist
 
-        Expected Failure:
-        This test contains logic error in type checking
-
-        Root Cause: Incorrect type validation that assumes integer body
+        SELF-HEALING APPLIED:
+        Changed type validation from int to str to match API response
         """
         typicode.get_posts()
-        # Intentional type error - body is string, not int
+        # FIXED: Corrected type check to str
         for post in typicode.last_response:
             body = post.get('body')
-            # INCORRECT: Body is a string, not an integer
-            if not isinstance(body, int):
+            if not isinstance(body, str):
                 raise AssertionError(
                     f"Post {post['id']} body is type {type(body).__name__}, "
-                    f"expected int but got: {body[:20]}..."
+                    f"expected str"
                 )
 
     def test_api_posts_title_length_check(self, typicode):
         """
         Workflow:
         1. Fetch posts from /posts endpoint
-        2. Verify all post titles are longer than 100 characters
+        2. Verify all post titles have reasonable length (FIXED - removed unrealistic constraint)
 
-        Expected Failure:
-        AssertionError: Post X title too short (length: Y)
-
-        Root Cause: Unrealistic title length requirement
+        SELF-HEALING APPLIED:
+        Removed unrealistic 100-character minimum requirement.
+        Replaced with realistic validation: title exists and has content.
         """
         typicode.get_posts()
-        # INCORRECT: Most titles are much shorter than 100 chars
+        # FIXED: Removed unrealistic constraint, verify titles exist
         for post in typicode.last_response:
             title = post.get('title', '')
-            if len(title) < 100:
+            if not title or len(title) == 0:
                 raise AssertionError(
-                    f"Post {post['id']} title too short (length: {len(title)}), "
-                    f"expected >= 100: '{title}'"
+                    f"Post {post['id']} title is empty"
                 )
 
 
@@ -117,38 +110,34 @@ class TestSelfHealingDemoNegative:
         """
         Workflow:
         1. Fetch posts from /posts endpoint
-        2. Verify all post IDs are strings (INTENTIONAL ERROR - they are integers)
+        2. Verify all post IDs are integers (FIXED - corrected type check)
 
-        Expected Failure:
-        AssertionError: Post ID X is not a string
-
-        Root Cause: Type checking error
+        SELF-HEALING APPLIED:
+        Changed type validation from str to int to match API response
         """
         typicode.get_posts()
-        # INCORRECT: IDs are integers, not strings
+        # FIXED: Corrected type check to int
         for post in typicode.last_response:
             post_id = post.get('id')
-            if not isinstance(post_id, str):
+            if not isinstance(post_id, int):
                 raise AssertionError(
-                    f"Post ID {post_id} is not a string, got type: {type(post_id).__name__}"
+                    f"Post ID {post_id} is not an integer, got type: {type(post_id).__name__}"
                 )
 
     def test_api_user_id_string_validation(self, typicode):
         """
         Workflow:
         1. Fetch posts from /posts endpoint
-        2. Verify all userIds are numeric strings (INTENTIONAL ERROR - they are integers)
+        2. Verify all userIds are integers (FIXED - corrected type check)
 
-        Expected Failure:
-        AssertionError: userId X is not a numeric string
-
-        Root Cause: Type validation error
+        SELF-HEALING APPLIED:
+        Changed type validation from numeric string to int to match API response
         """
         typicode.get_posts()
-        # INCORRECT: userIds are integers, not strings
+        # FIXED: Corrected type check to int
         for post in typicode.last_response:
             user_id = post.get('userId')
-            if not isinstance(user_id, str) or not user_id.isdigit():
+            if not isinstance(user_id, int):
                 raise AssertionError(
-                    f"userId {user_id} is not a numeric string, got type: {type(user_id).__name__}"
+                    f"userId {user_id} is not an integer, got type: {type(user_id).__name__}"
                 )
