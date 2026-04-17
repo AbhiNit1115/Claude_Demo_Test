@@ -1,5 +1,7 @@
 {
-    "airun.settings": {},
+    "airun.settings": {
+        "workspaceId": "6c36c844-a23f-42a3-ac6e-9c8551029851"
+    },
     "claudeCode.environmentVariables": [
         {
             "name": "ANTHROPIC_LOG",
